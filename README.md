@@ -3,7 +3,7 @@ Javascript based split test script
 
 ```javascript
 var sampler = require('./sample');
-
+// Polyfill
 var $ = document.querySelector.bind(document);
 
 sampler.setUp([
