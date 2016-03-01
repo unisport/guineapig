@@ -29,11 +29,14 @@ define(['./cookie'], function (cookie) {
             var self = this;
 
             this._tests.forEach(function(test) {
-                if (test.scope === scope || test.scope === '*') {
+                if (test.scope === scope) {
                     var sample = self._cookie.get(test.name);
-                    if ( sample === 'a' ) {
+                    if ( sample === test.target.toLowerCase() ) {
                         test.test();
                     }
+                }
+                if ( test.scope === '*' ) {
+                    test.test();
                 }
             });
         }

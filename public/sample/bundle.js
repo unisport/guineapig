@@ -56,7 +56,8 @@
 	    {
 	        name: 'test_kitty', test: function() {
 	            $('#butt').style.backgroundColor = 'yellow'; 
-	        }, scope: '#test_kitty'
+	        }, scope: '#test_kitty',
+	        target: 'A'
 	    },
 	    {
 	        name: 'test_pussy', test: function() {
@@ -66,7 +67,8 @@
 	    {
 	        name: 'test_world', test: function() {
 	            console.log('Hello World');
-	        }, scope: '#test_world'
+	        }, scope: '#test_world',
+	        target: 'A'
 	    }
 	])
 	    .createSample()
@@ -108,11 +110,14 @@
 	            var self = this;
 
 	            this._tests.forEach(function(test) {
-	                if (test.scope === scope || test.scope === '*') {
+	                if (test.scope === scope) {
 	                    var sample = self._cookie.get(test.name);
-	                    if ( sample === 'a' ) {
+	                    if ( sample === test.target.toLowerCase() ) {
 	                        test.test();
 	                    }
+	                }
+	                if ( test.scope === '*' ) {
+	                    test.test();
 	                }
 	            });
 	        }
