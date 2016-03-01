@@ -10,7 +10,8 @@ sampler.setUp([
     {
         name: 'test_kitty', test: function() {
             $('#butt').style.backgroundColor = 'yellow'; 
-        }, scope: '#test_kitty'
+        }, scope: '#test_kitty',
+        target: 'A'
     },
     {
         name: 'test_pussy', test: function() {
@@ -20,7 +21,8 @@ sampler.setUp([
     {
         name: 'test_world', test: function() {
             console.log('Hello World');
-        }, scope: '#test_world'
+        }, scope: '#test_world',
+        target: 'B'
     }
 ])
     .createSample()
