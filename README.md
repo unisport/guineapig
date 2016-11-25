@@ -1,30 +1,42 @@
 # silver-palm-tree
-Javascript based split test script
+Running multivariant test on your UI can improve conversion and userexperience.
+
+The tests Array contains objects that each represent a single experiment to be performed depending on the sample. Inside each experiment you can use the test() function to perform additional testing for different criteria, by default it should return true if you just want to perform the experiment.
 
 ```javascript
-var sampler = require('./sample');
-// Polyfill
-var $ = document.querySelector.bind(document);
+var tests = [
+    {
+        name: 'Add to Cart',
+        test: function(obj) {
+            return true;
+        },
+        experiment: function(obj) {
+            // Manipulate the DOM as much as you like here
+        }
+    },
+    {
+        name: 'Subscribe to our Newsletter',
+        test: function(obj) {
+            return true;
+        },
+        experiment: function(obj) {
+            // Manipulate the DOM as much as you like here
+        }
+    },
+    {
+        name: 'Run Forest, Run',
+        test: function(obj) {
+            return true;
+        },
+        experiment: function(obj) {
+            // Manipulate the DOM as much as you like here
+        }
+    },
+],
+name = 'Super Awesome Kickass UX Experiment';
 
-sampler.setUp([
-    {
-        name: 'test_kitty', test: function() {
-            $('#butt').style.backgroundColor = 'yellow'; 
-        }, scope: '#test_kitty',
-        target: 'A'
-    },
-    {
-        name: 'test_pussy', test: function() {
-            $('body').style.backgroundColor = 'silver';
-        }, scope: '*'
-    },
-    {
-        name: 'test_world', test: function() {
-            console.log('Hello World');
-        }, scope: '#test_world',
-        target: 'B'
-    }
-])
-    .createSample()
-    .runTests(location.hash);
+// Run the GuineaPig
+GuineaPig
+    .experiment(name, tests)
+    .go();
 ```
