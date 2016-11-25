@@ -93,16 +93,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var randomInt = function(low, high) {
 	        return Math.floor(Math.random() * (high - low) + low);
 	    };
-	    /**
-	     * Cookie methods
-	     */
+
 	    var get = function(key) {
 	        var val = [],
 	            cookie = document.cookie.split(';') || [],
 	            name = RegExp("^\\s*"+ key +"=\\s*(.*?)\\s*$");
 	        for (var i = 0; i < cookie.length; i++) {
 	            var f = cookie[i].match(name);
-	            f&&val.push(f[1]);
+	                f&&val.push(f[1]);
 	        }
 	        return val.pop();
 	    };
@@ -112,22 +110,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            val = v,
 	            days = d || 1,
 	            path = p || '/',
-	            expires = '';
-
-	        var date = new Date();
+	            expires = '',
+	            date = new Date();
 	            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
 	            expires = '; expires='+ date.toGMTString();
 
 	        document.cookie = key +'='+ val + expires  +'; path='+ path;
-	    }
+	    };
 
 	    var del = function() {
 	        set(this.test, '', -1);
 	    };
 
-	    /**
-	     * Utils
-	     */
 	    String.prototype.toToken = function() {
 	        return this.toLowerCase().replace(/[^a-z0-9]/g, '_');
 	    };
