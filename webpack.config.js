@@ -3,10 +3,12 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: {
-        sample: './src/samplemain.js'
+        guineapig: './src/index.js'
     },
     output: {
-        path: __dirname, filename: '/public/[name]/bundle.js'
-    },
-    module: {}
+        path: path.join('dist', 'js'),
+        filename: '[name].js',
+        library: ['GuineaPig'],
+        libraryTarget: 'umd'
+    }
 };

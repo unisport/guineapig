@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="da">
+    <head>
+        <meta charset="utf-8">
+        <title>Hello Kitty</title>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script src="/js/guineapig.js"></script>
+    </head>
+    <body>
+        <div id="cont">
+            <button id="butt">Click</button>
+        </div>
+
+        <script>
+            var tests = [
+                {
+                    name: 'test a',
+                    test: function(obj) {
+                        return true;
+                    },
+                    experiment: function(obj) {
+                        $('#butt').on('click', function(e) {
+                            e.preventDefault();
+                            $('<div>Hello '+ obj.name +'</div>')
+                                .insertAfter($('#butt'));
+                        });
+                    }
+                },
+                {
+                    name: 'test b',
+                    test: function(obj) {
+                        return true;
+                    },
+                    experiment: function(obj) {
+                        $('#cont').css('background-color', 'red');
+                    }
+                },
+                {
+                    name: 'test c',
+                    test: function(obj) {
+                        return true;
+                    },
+                    experiment: function(obj) {
+                        $('#cont').css('border', '5px solid red');
+                    }
+                }
+            ]
+                name = 'model_pictures';
+            GuineaPig.experiment(
+                        name,
+                        tests
+                    ).go();
+        </script>
+    </body>
+</html>
