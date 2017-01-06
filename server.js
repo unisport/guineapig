@@ -12,3 +12,8 @@ app.use(express.static('dist'));
 app.listen(port, function () {
     console.log('Server running on port %s', port);
 });
+
+app.get('/distribution/:experiment', function (req, res) {
+    var r = Math.floor( Math.random() * 3 );
+    res.send(JSON.stringify({ 'variant': r, 'experiment': req.params.experiment }));
+});

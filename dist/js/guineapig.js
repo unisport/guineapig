@@ -58,27 +58,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'use strict';
 
 	    var test = '',
-	        variants = [],
-	        randInt = 0;
+	        variants = [];
 
-	    var init = function(name, variants) {
+	    var init = function(name, variants, distribution) {
 	        this.test = name.toToken(),
-	        this.variants = variants,
-	        this.randInt = randomInt(0, this.variants.length);
+	        this.variants = variants;
 
-	        if (typeof get(this.test) == 'undefined') {
-	            set(this.test, this.variants[this.randInt].name.toToken(), 30);
-	        }
-	        return this;
+	        console.log( this.test );
+	        http( this.test ).then( function ( resp ) {
+	            
+	        }).catch( function ( reason ) {
+	            console.log( reason );
+	        });
 	    };
 
+	    var http = function ( experiment ) {
+	        return new Promise ( function ( resolve, reject ) {
+	            var xhr = new XMLHttpRequest();
+	                xhr.open( 'GET', '/distribution/'+ experiment );
+	                xhr.send();
+	                xhr.onload = function () {
+	                    console.log( 'loading' );
+	                    if ( this.status >= 200 && this.status < 300 ) {
+	                        resolve( JSON.parse( this.response ) );
+	                    } else {
+	                        reject( this.statusText );
+	                    }
+	                };
+	                xhr.onerror = function () {
+	                    reject( this.statusText );
+	                };
+	        });
+	    };
 	    var run = function() {
 	        var variant = get(this.test);
 	        for (var i = 0; i < this.variants.length; i++) {
 	            var obj = this.variants[i];
+	            /*
 	            if (Object.keys(obj).includes('name') && obj.name.toToken() === variant.toToken()) {
 	                runExperiment(obj);
 	            }
+	            */
 	        }
 	    };
 

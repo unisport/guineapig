@@ -15,6 +15,7 @@
             var tests = [
                 {
                     name: 'test a',
+                    default: false,
                     test: function(obj) {
                         return true;
                     },
@@ -28,6 +29,7 @@
                 },
                 {
                     name: 'test b',
+                    default: false,
                     test: function(obj) {
                         return true;
                     },
@@ -37,6 +39,7 @@
                 },
                 {
                     name: 'test c',
+                    default: true,
                     test: function(obj) {
                         return true;
                     },
@@ -45,11 +48,13 @@
                     }
                 }
             ]
-                name = 'model_pictures';
+                name = 'model_pictures',
+                distribution = 100;
             GuineaPig.experiment(
                         name,
-                        tests
-                    ).go();
+                        tests,
+                        distribution
+                    );
         </script>
     </body>
 </html>
