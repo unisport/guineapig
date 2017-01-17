@@ -57,18 +57,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GuineaPig = (function() {
 	    'use strict';
 
-	    var test = '',
-	        variants = [];
+	    var init = function(name, variants) {
+	        var test = name.toToken(),
+	            experiments = variants,
+	            experiment = null;
 
-	    var init = function(name, variants, distribution) {
-	        this.test = name.toToken(),
-	        this.variants = variants;
-
-	        console.log( this.test );
-	        http( this.test ).then( function ( resp ) {
-	            
-	        }).catch( function ( reason ) {
-	            console.log( reason );
+	        return new Promise( function ( resolve, reject ) {
+	            if ( get( 'guineapig_'+ test ) ) {
+	                experiment = get( 'guineapig_'+ test );
+	                return resolve ( experiment );
+	            } else {
+	                http( test ).then( function ( resp ) {
+	                    set( 'guineapig_'+ resp.experiment, resp.variant );
+	                    experiment = resp.variant;
+	                    return resolve ( experiment );
+	                }).catch( function ( reason ) {
+	                    // console.log( reason );
+	                    return reject ( reason );
+	                });
+	            }
 	        });
 	    };
 
@@ -90,6 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                };
 	        });
 	    };
+
 	    var run = function() {
 	        var variant = get(this.test);
 	        for (var i = 0; i < this.variants.length; i++) {

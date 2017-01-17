@@ -47,14 +47,15 @@
                         $('#cont').css('border', '5px solid red');
                     }
                 }
-            ]
-                name = 'model_pictures',
-                distribution = 100;
+            ],
+            name = 'model_pictures';
+            
             GuineaPig.experiment(
                         name,
-                        tests,
-                        distribution
-                    );
+                        tests
+                        ).then( function ( variant ) {
+                            console.log( tests, variant );
+                        });
         </script>
     </body>
 </html>

@@ -13,7 +13,10 @@ app.listen(port, function () {
     console.log('Server running on port %s', port);
 });
 
+function retVal(low, high) {
+    return Math.floor(Math.random() * (high - low +1) + low);
+}
+
 app.get('/distribution/:experiment', function (req, res) {
-    var r = Math.floor( Math.random() * 3 );
-    res.send(JSON.stringify({ 'variant': r, 'experiment': req.params.experiment }));
+    res.send(JSON.stringify({ 'variant': retVal(0, 3), 'experiment': req.params.experiment }));
 });
