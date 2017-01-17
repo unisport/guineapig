@@ -12,7 +12,9 @@ app.use(express.static('dist'));
 app.listen(port, function () {
     console.log('Server running on port %s', port);
 });
-
+/*
+ * Faking the backend
+ */
 function retVal(low, high) {
     return Math.floor(Math.random() * (high - low +1) + low);
 }
