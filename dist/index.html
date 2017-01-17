@@ -15,11 +15,7 @@
             var tests = [
                 {
                     name: 'test a',
-                    default: false,
-                    test: function(obj) {
-                        return true;
-                    },
-                    experiment: function(obj) {
+                    experiment: function() {
                         $('#butt').on('click', function(e) {
                             e.preventDefault();
                             $('<div>Hello '+ obj.name +'</div>')
@@ -29,21 +25,13 @@
                 },
                 {
                     name: 'test b',
-                    default: false,
-                    test: function(obj) {
-                        return true;
-                    },
-                    experiment: function(obj) {
+                    experiment: function() {
                         $('#cont').css('background-color', 'red');
                     }
                 },
                 {
                     name: 'test c',
-                    default: true,
-                    test: function(obj) {
-                        return true;
-                    },
-                    experiment: function(obj) {
+                    experiment: function() {
                         $('#cont').css('border', '5px solid red');
                     }
                 }
@@ -54,7 +42,7 @@
                         name,
                         tests
                         ).then( function ( variant ) {
-                            console.log( tests, variant );
+                            variant.experiment();
                         });
         </script>
     </body>

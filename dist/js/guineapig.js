@@ -65,12 +65,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return new Promise( function ( resolve, reject ) {
 	            if ( get( 'guineapig_'+ test ) ) {
 	                experiment = get( 'guineapig_'+ test );
-	                return resolve ( experiment );
+	                return resolve ( experiments[ parseInt( experiment ) ] );
 	            } else {
 	                http( test ).then( function ( resp ) {
 	                    set( 'guineapig_'+ resp.experiment, resp.variant );
 	                    experiment = resp.variant;
-	                    return resolve ( experiment );
+	                    return resolve ( experiments[ parseInt( experiment ) ] );
 	                }).catch( function ( reason ) {
 	                    // console.log( reason );
 	                    return reject ( reason );
@@ -85,7 +85,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xhr.open( 'GET', '/distribution/'+ experiment );
 	                xhr.send();
 	                xhr.onload = function () {
-	                    console.log( 'loading' );
+	                    // console.log( 'loading' );
 	                    if ( this.status >= 200 && this.status < 300 ) {
 	                        resolve( JSON.parse( this.response ) );
 	                    } else {
@@ -96,30 +96,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    reject( this.statusText );
 	                };
 	        });
-	    };
-
-	    var run = function() {
-	        var variant = get(this.test);
-	        for (var i = 0; i < this.variants.length; i++) {
-	            var obj = this.variants[i];
-	            /*
-	            if (Object.keys(obj).includes('name') && obj.name.toToken() === variant.toToken()) {
-	                runExperiment(obj);
-	            }
-	            */
-	        }
-	    };
-
-	    var runExperiment = function(experiment) {
-	        var obj = experiment;
-
-	        if (obj.test(experiment)) {
-	            obj.experiment(experiment);
-	        }
-	    };
-
-	    var randomInt = function(low, high) {
-	        return Math.floor(Math.random() * (high - low) + low);
 	    };
 
 	    var get = function(key) {
@@ -156,7 +132,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return {
 	        experiment: init,
-	        go: run,
 	        reset: del
 	    }
 	})();

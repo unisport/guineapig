@@ -20,5 +20,5 @@ function retVal(low, high) {
 }
 
 app.get('/distribution/:experiment', function (req, res) {
-    res.send(JSON.stringify({ 'variant': retVal(0, 3), 'experiment': req.params.experiment }));
+    res.send(JSON.stringify({ 'variant': retVal(0, 2), 'experiment': req.params.experiment }));
 });
