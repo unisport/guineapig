@@ -66,12 +66,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if ( get( 'guineapig_'+ test ) ) {
 	                experiment = experiments[ parseInt( get( 'guineapig_'+ test ) ) ];
 	                experiment['token'] = experiment.name.toToken();
+	                experiment['title'] = test;
 	                return resolve ( experiment );
 	            } else {
 	                http( test ).then( function ( resp ) {
 	                    set( 'guineapig_'+ resp.experiment, resp.variant );
 	                    experiment = experiments[ parseInt( resp.variant ) ];
 	                    experiment['token'] = experiment.name.toToken();
+	                    experiment['title'] = test;
 	                    return resolve ( experiment );
 	                }).catch( function ( reason ) {
 	                    // console.log( reason );
