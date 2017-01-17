@@ -8,13 +8,15 @@ var GuineaPig = (function() {
 
         return new Promise( function ( resolve, reject ) {
             if ( get( 'guineapig_'+ test ) ) {
-                experiment = get( 'guineapig_'+ test );
-                return resolve ( experiments[ parseInt( experiment ) ] );
+                experiment = experiments[ parseInt( get( 'guineapig_'+ test ) ) ];
+                experiment['token'] = experiment.name.toToken();
+                return resolve ( experiment );
             } else {
                 http( test ).then( function ( resp ) {
                     set( 'guineapig_'+ resp.experiment, resp.variant );
-                    experiment = resp.variant;
-                    return resolve ( experiments[ parseInt( experiment ) ] );
+                    experiment = experiments[ parseInt( resp.variant ) ];
+                    experiment['token'] = experiment.name.toToken();
+                    return resolve ( experiment );
                 }).catch( function ( reason ) {
                     // console.log( reason );
                     return reject ( reason );

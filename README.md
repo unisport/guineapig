@@ -7,27 +7,25 @@ The tests Array contains objects that each represent a single experiment to be p
 var tests = [
     {
         name: 'Add to Cart',
-        test: function(obj) {
-            return true;
-        },
         experiment: function(obj) {
             // Manipulate the DOM as much as you like here
+            // pass events to Google Analytics
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Experiment',
+                eventAction: '',
+                eventLabel: ''
+            });
         }
     },
     {
         name: 'Subscribe to our Newsletter',
-        test: function(obj) {
-            return true;
-        },
         experiment: function(obj) {
             // Manipulate the DOM as much as you like here
         }
     },
     {
         name: 'Run Forest, Run',
-        test: function(obj) {
-            return true;
-        },
         experiment: function(obj) {
             // Manipulate the DOM as much as you like here
         }
@@ -38,5 +36,7 @@ name = 'Super Awesome Kickass UX Experiment';
 // Run the GuineaPig
 GuineaPig
     .experiment(name, tests)
-    .go();
+    .then(function (variant) {
+        variant.experiment();    
+    });
 ```

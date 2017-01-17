@@ -15,24 +15,27 @@
             var tests = [
                 {
                     name: 'test a',
-                    experiment: function() {
+                    experiment: function(obj) {
                         $('#butt').on('click', function(e) {
                             e.preventDefault();
                             $('<div>Hello '+ obj.name +'</div>')
                                 .insertAfter($('#butt'));
                         });
+                        console.log( obj );
                     }
                 },
                 {
                     name: 'test b',
-                    experiment: function() {
-                        $('#cont').css('background-color', 'red');
+                    experiment: function(obj) {
+                        $('#cont').css('background-color', 'yellow');
+                        console.log( obj );
                     }
                 },
                 {
                     name: 'test c',
-                    experiment: function() {
-                        $('#cont').css('border', '5px solid red');
+                    experiment: function(obj) {
+                        $('#cont').css('border', '5px solid green');
+                        console.log( obj );
                     }
                 }
             ],
@@ -42,7 +45,7 @@
                         name,
                         tests
                         ).then( function ( variant ) {
-                            variant.experiment();
+                            variant.experiment( variant );
                         });
         </script>
     </body>
