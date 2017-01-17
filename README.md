@@ -9,13 +9,6 @@ var tests = [
         name: 'Add to Cart',
         experiment: function(obj) {
             // Manipulate the DOM as much as you like here
-            // pass events to Google Analytics
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'Experiment',
-                eventAction: '',
-                eventLabel: ''
-            });
         }
     },
     {
