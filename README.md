@@ -29,7 +29,7 @@ name = 'Super Awesome Kickass UX Experiment';
 // Run the GuineaPig
 GuineaPig
     .experiment(name, tests)
-    .then(function (variant) {
-        variant.experiment();    
+    .then(function () {
+        console.log('Hello Kitty');    
     });
 ```
