@@ -52,7 +52,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var http = __webpack_require__(1);
 
 	var GuineaPig = (function() {
 	    'use strict';
@@ -67,38 +70,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	                experiment = experiments[ parseInt( get( 'guineapig_'+ test ) ) ];
 	                experiment['token'] = experiment.name.toToken();
 	                experiment['title'] = test;
-	                return resolve ( experiment );
-	            } else {
-	                http( test ).then( function ( resp ) {
-	                    set( 'guineapig_'+ resp.experiment, resp.variant );
-	                    experiment = experiments[ parseInt( resp.variant ) ];
-	                    experiment['token'] = experiment.name.toToken();
-	                    experiment['title'] = test;
-	                    return resolve ( experiment );
-	                }).catch( function ( reason ) {
-	                    // console.log( reason );
-	                    return reject ( reason );
-	                });
-	            }
-	        });
-	    };
 
-	    var http = function ( experiment ) {
-	        return new Promise ( function ( resolve, reject ) {
-	            var xhr = new XMLHttpRequest();
-	                xhr.open( 'GET', '/distribution/'+ experiment );
-	                xhr.send();
-	                xhr.onload = function () {
-	                    // console.log( 'loading' );
-	                    if ( this.status >= 200 && this.status < 300 ) {
-	                        resolve( JSON.parse( this.response ) );
-	                    } else {
-	                        reject( this.statusText );
-	                    }
-	                };
-	                xhr.onerror = function () {
-	                    reject( this.statusText );
-	                };
+	                experiment.experiment( {'name': experiment.name, 'title': experiment.title} );
+
+	                return resolve ();
+	            } else {
+	                http().get( '/distribution/'+ test )
+	                    .then( function ( resp ) {
+	                        var json = JSON.parse ( resp );
+	                        set( 'guineapig_'+ json.experiment, json.variant );
+	                        experiment = experiments[ parseInt ( json.variant ) ];
+	                        experiment['token'] = experiment.name.toToken();
+	                        experiment['title'] = test;
+	                        
+	                        experiment.experiment( {'name': experiment.name, 'title': experiment.title} );
+
+	                        return resolve ();
+	                    } ).catch ( function ( reason ) {
+	                        return reject ( reason );
+	                    } );
+	            }
 	        });
 	    };
 
@@ -141,6 +132,64 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 	module.exports = GuineaPig;
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	var http = function () {
+	    "use strict";
+	    var core = {
+	        xhr: function ( method, url, args, headers ) {
+	            return new Promise ( function ( resolve, reject ) {
+	                var client = new XMLHttpRequest(),
+	                    uri = url;
+	                if ( args && ( method == 'POST' ) ) {
+	                    uri += '?';
+	                    var argcount = 0;
+	                    for ( var key in args ) {
+	                        if ( args.hasOwnProperty ( key ) ) {
+	                            if ( argcount++ ) {
+	                                uri += '&';
+	                            }
+	                            uri += encodeURIComponent ( key ) + '=' + encodeURIComponent( args[ key ] );
+	                        }
+	                    }
+	                }
+	                client.open ( method, uri );
+	                if ( headers !== undefined ) {
+	                    for ( var key in headers ) {
+	                        client.setRequestHeader ( key.toUpperCase(), headers[ key ] );
+	                    }
+	                }
+	                client.send();
+	                client.onload = function () {
+	                    console.log(this);
+	                    if ( this.status == 200) {
+	                        resolve ( this.response );
+	                    } else {
+	                        reject ( Error ( this.statusText ) );
+	                    }
+	                };
+	                client.onerror = function () {
+	                    reject ( this.statusText );
+	                }
+	            } );
+	        }
+	    };
+
+	    return {
+	        'get': function ( url, args, headers) {
+	            return core.xhr ( 'GET', url, args, headers );
+	        },
+	        'post': function ( url, args) {
+	            return core.xhr ( 'POST', url, args, headers );
+	        }
+	    };
+	};
+
+	module.exports = http;
 
 
 /***/ }
