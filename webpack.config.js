@@ -6,7 +6,7 @@ module.exports = {
         guineapig: './src/index.js'
     },
     output: {
-        path: path.join('dist', 'js'),
+        path: path.resolve(__dirname, path.join('dist', 'js')),
         filename: '[name].js',
         library: ['GuineaPig'],
         libraryTarget: 'umd'

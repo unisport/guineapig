@@ -3,50 +3,49 @@
     <head>
         <meta charset="utf-8">
         <title>Hello Kitty</title>
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-        <script src="/js/guineapig.js"></script>
     </head>
     <body>
         <div id="cont">
             <button id="butt">Click</button>
         </div>
 
+        <script src="/js/guineapig.js"></script>
         <script>
-            var tests = [
-                {
-                    name: 'test a',
-                    experiment: function(obj) {
-                        $('#butt').on('click', function(e) {
-                            e.preventDefault();
-                            $('<div>Hello '+ obj.name +'</div>')
-                                .insertAfter($('#butt'));
-                        });
-                        console.log( obj );
-                    }
-                },
-                {
-                    name: 'test b',
-                    experiment: function(obj) {
-                        $('#cont').css('background-color', 'yellow');
-                        console.log( obj );
-                    }
-                },
-                {
-                    name: 'test c',
-                    experiment: function(obj) {
-                        $('#cont').css('border', '5px solid green');
-                        console.log( obj );
-                    }
-                }
-            ],
-            name = 'model_pictures';
-            
-            GuineaPig.experiment(
-                        name,
-                        tests
-                        ).then( function () {
-                            console.log('Hello');
-                        });
+          var GuineaPigExperiment = 1;
+
+          var tests = [
+            {
+              name: 'Hello Kitty',
+              experiment: function(obj) {
+                var metrics = Object.assign(obj, {
+                  appVersion: navigator.appVersion
+                });
+                document.querySelector('#butt').style = 'color: red';
+
+                document.querySelector('#butt').addEventListener('click', function(event) {
+                  GuineaPig.store(metrics);
+                });
+              }
+            },
+            {
+              name: 'Hello Pussy',
+              experiment: function(obj) {
+                var metrics = Object.assign(obj, {
+                  appVersion: navigator.appVersion
+                });
+                document.querySelector('#butt').style = 'color: orange';
+
+                document.querySelector('#butt').addEventListener('click', function(event) {
+                  GuineaPig.store(metrics);
+                });
+              }
+            },
+          ],
+          name = 'Super Awesome Kickass UX Experiment';
+          GuineaPig.setup({
+            backend: '/backend',
+            cookieExpire: 30
+          }).experiment(name, tests);
         </script>
     </body>
 </html>

@@ -11,188 +11,161 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
-/******/ 			exports: {},
-/******/ 			id: moduleId,
-/******/ 			loaded: false
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-
+/******/ 		module.l = true;
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	
-	var http = __webpack_require__(1);
+/**
+ *
+ */
+var GuineaPig = (function() {
+    'use strict';
 
-	var GuineaPig = (function() {
-	    'use strict';
+    var config = {
+      backend: '/experiments',
+      cookieExpire: 40,
+      cookiePath: '/'
+    };
+    // Runs the experiment and stores it in a cookie
+    var experiment = function(name, variants) {
+        var test = name.toToken(),
+            experiments = variants,
+            experiment = null,
+            variant = window.GuineaPigExperiment || 0;
 
-	    var init = function(name, variants) {
-	        var test = name.toToken(),
-	            experiments = variants,
-	            experiment = null;
+            if (get('guineapig_'+ test)) {
+              variant = parseInt(get('guineapig_'+ test));
+            } else {
+              set('guineapig_'+ test, variant, 365);
+            }
 
-	        return new Promise( function ( resolve, reject ) {
-	            if ( get( 'guineapig_'+ test ) ) {
-	                experiment = experiments[ parseInt( get( 'guineapig_'+ test ) ) ];
-	                experiment['token'] = experiment.name.toToken();
-	                experiment['title'] = test;
+            experiment = experiments[variant];
+            experiment.experiment({
+              name: experiment.name,
+              variant: variant
+            });
+            
+    };
+    // Setup
+    var setup = function(obj) {
+      Object.assign(config, obj);
+      return this;
+    };
+    // Posts data to the backend
+    var store = function(obj) {
+      fetch(config.backend, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+      });
+    };
+    // Reading cookie value based on cookie name
+    var get = function(key) {
+        var val = [],
+            cookie = document.cookie.split(';') || [],
+            name = RegExp("^\\s*"+ key +"=\\s*(.*?)\\s*$");
+        for (var i = 0; i < cookie.length; i++) {
+            var f = cookie[i].match(name);
+                f&&val.push(f[1]);
+        }
+        return val.pop();
+    };
+    // Set cookie with name, value, days and path
+    var set = function(k, v, d, p) {
+        var key = k,
+            val = v,
+            days = d || config.cookieExpire,
+            path = p || config.cookiePath,
+            expires = '',
+            date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = '; expires='+ date.toGMTString();
 
-	                experiment.experiment( {'name': experiment.name, 'title': experiment.title} );
+        document.cookie = key +'='+ val + expires  +'; path='+ path;
+    };
+    // Delete cookie
+    var del = function() {
+        set(this.test, '', -1);
+    };
+    // Helper function to tokenize a string
+    String.prototype.toToken = function() {
+        return this.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    };
+    // Public methods
+    return {
+        experiment: experiment,
+        reset: del,
+        store: store,
+        setup: setup
+    }
+})();
 
-	                return resolve ();
-	            } else {
-	                http().get( '/distribution/'+ test )
-	                    .then( function ( resp ) {
-	                        var json = JSON.parse ( resp );
-	                        set( 'guineapig_'+ json.experiment, json.variant );
-	                        experiment = experiments[ parseInt ( json.variant ) ];
-	                        experiment['token'] = experiment.name.toToken();
-	                        experiment['title'] = test;
-	                        
-	                        experiment.experiment( {'name': experiment.name, 'title': experiment.title} );
+module.exports = GuineaPig;
 
-	                        return resolve ();
-	                    } ).catch ( function ( reason ) {
-	                        return reject ( reason );
-	                    } );
-	            }
-	        });
-	    };
-
-	    var get = function(key) {
-	        var val = [],
-	            cookie = document.cookie.split(';') || [],
-	            name = RegExp("^\\s*"+ key +"=\\s*(.*?)\\s*$");
-	        for (var i = 0; i < cookie.length; i++) {
-	            var f = cookie[i].match(name);
-	                f&&val.push(f[1]);
-	        }
-	        return val.pop();
-	    };
-
-	    var set = function(k, v, d, p) {
-	        var key = k,
-	            val = v,
-	            days = d || 1,
-	            path = p || '/',
-	            expires = '',
-	            date = new Date();
-	            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-	            expires = '; expires='+ date.toGMTString();
-
-	        document.cookie = key +'='+ val + expires  +'; path='+ path;
-	    };
-
-	    var del = function() {
-	        set(this.test, '', -1);
-	    };
-
-	    String.prototype.toToken = function() {
-	        return this.toLowerCase().replace(/[^a-z0-9]/g, '_');
-	    };
-
-	    return {
-	        experiment: init,
-	        reset: del
-	    }
-	})();
-
-	module.exports = GuineaPig;
-
-
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	var http = function () {
-	    "use strict";
-	    var core = {
-	        xhr: function ( method, url, args, headers ) {
-	            return new Promise ( function ( resolve, reject ) {
-	                var client = new XMLHttpRequest(),
-	                    uri = url;
-	                if ( args && ( method == 'POST' ) ) {
-	                    uri += '?';
-	                    var argcount = 0;
-	                    for ( var key in args ) {
-	                        if ( args.hasOwnProperty ( key ) ) {
-	                            if ( argcount++ ) {
-	                                uri += '&';
-	                            }
-	                            uri += encodeURIComponent ( key ) + '=' + encodeURIComponent( args[ key ] );
-	                        }
-	                    }
-	                }
-	                client.open ( method, uri );
-	                if ( headers !== undefined ) {
-	                    for ( var key in headers ) {
-	                        client.setRequestHeader ( key.toUpperCase(), headers[ key ] );
-	                    }
-	                }
-	                client.send();
-	                client.onload = function () {
-	                    console.log(this);
-	                    if ( this.status == 200) {
-	                        resolve ( this.response );
-	                    } else {
-	                        reject ( Error ( this.statusText ) );
-	                    }
-	                };
-	                client.onerror = function () {
-	                    reject ( this.statusText );
-	                }
-	            } );
-	        }
-	    };
-
-	    return {
-	        'get': function ( url, args, headers) {
-	            return core.xhr ( 'GET', url, args, headers );
-	        },
-	        'post': function ( url, args) {
-	            return core.xhr ( 'POST', url, args, headers );
-	        }
-	    };
-	};
-
-	module.exports = http;
-
-
-/***/ }
-/******/ ])
+/***/ })
+/******/ ]);
 });
-;
