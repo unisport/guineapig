@@ -1,4 +1,4 @@
-# silver-palm-tree
+# GuineaPig
 Running multivariant test on your UI can improve conversion and userexperience.
 
 The tests Array contains objects that each represent a single experiment to be performed depending on the sample. Inside each experiment you can use the test() function to perform additional testing for different criteria, by default it should return true if you just want to perform the experiment.
